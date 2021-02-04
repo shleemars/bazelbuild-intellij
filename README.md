@@ -1,23 +1,24 @@
+# About the Fork
+
+**Goal: Have a working version of the Bazel Android Studio plugin. Share it with anyone else who might want it!**
+
+We've forked only because we found we needed to apply bug fixes to get the plugin to work. Hopefully that's temporary; we'd be delighted to get these fixes into the main repo instead! Indeed, we tried to propose solutions there first, but haven't heard anything from the maintainers in a while--nor have most users, issues, or PRs, it seems. Maintainers, if you see this, we'd be delighted to delete this repo when the main one is back in working order.
+
+In the meantime, we'll try to maintain this repo as a version of the plugin that works outside of Google. We'll have it automatically pull in the latest from the official repo. If you spot good fixes that unbreak key issues in the main repo but aren't being merged , we'd love it if you'd help keep the fork working by filing a PR or issue here. But new issues should go in the main repo!
+
+## Key Issues Worked Around:
+- Main repo uses a broken version of protobuf that prevents syncing: https://github.com/bazelbuild/intellij/issues/2265
+- Compiler wrapper breaks C++/NDK autocomplete: https://github.com/bazelbuild/intellij/issues/2285
+
 # An IntelliJ plugin for [Bazel](http://bazel.build) projects
-
-This is an early-access version of our Bazel plugins for IntelliJ,
-Android Studio, and CLion.
-
-This repository is generally in a state matching the most recently uploaded 
-plugins in the JetBrains' plugin repository. See the 
-[releases](https://github.com/bazelbuild/intellij/releases) tab for more
-information.
-
-## Support
-
-See the [support matrix](https://ij.bazel.build/docs/bazel-support.html)
-on the various plugin support levels across JetBrains products, languages,
-and operating systems.
 
 ## Installation
 
-You can find our plugin in the Jetbrains plugin repository by going to
-`Settings -> Browse Repositories`, and searching for `Bazel`.
+To use the fork, you'll have to build it from source--but that's easy and fast. See "Building the plugin," below.
+
+Load it into the IDE via Preferences->Plugins->Gear->Install Plugin from Disk
+
+[If anyone wants to help with better distribution (binaries, CI, etc.) we'd love it!]
 
 ## Usage
 
@@ -47,15 +48,3 @@ If you are  using the most recent version of your IDE, you likely want
 `--define=ij_product=<IDE>-beta` which will be the next version after
 `<IDE>-latest`.  A complete mapping of all currently defined versions can
 be found in  `intellij_platform_sdk/build_defs.bzl`.
-
-## Contributions
-
-We may be able to accept contributions in some circumstances. Some caveats:
-
-  * Before opening a pull request, first file an issue and discuss potential
-    changes with the devs. This will often save you time you would otherwise
-    have invested in a patch which can't be applied.
-  * We can't accept sylistic, refactoring, or "cleanup" changes.
-  * We have very limited bandwidth, and applying patches upstream is a
-    time-consuming process. Large patches generally can't be accepted unless
-    there's clear value for all our users.
