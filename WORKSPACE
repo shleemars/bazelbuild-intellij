@@ -138,7 +138,7 @@ http_archive(
         "    visibility = ['//visibility:public'],",
         ")",
     ]),
-    sha256 = "789e4dd1be7e81e69dd148c281b283b8babbfcd47c4af2d7686b6570b7a45d1b",
+    sha256 = "510303a863ea138554777d18968accdd1320aa41e63e62170012b9b6566b4a7e",
     url = "https://plugins.jetbrains.com/files/7322/106700/python-ce-203.6682.179.zip",
 )
 
@@ -152,7 +152,7 @@ http_archive(
         "    visibility = ['//visibility:public'],",
         ")",
     ]),
-    sha256 = "af4ad5070d27788bece5bb9acb66d90acf42008febbcdac5d794c06f78621b19",
+    sha256 = "1f7c47c2a3f6799f921d077da1d056414c9f67bea568a2053dd0dbdc526933a3",
     url = "https://plugins.jetbrains.com/files/9568/87978/intellij-go-201.7846.76.189.zip",
 )
 
@@ -222,7 +222,7 @@ http_archive(
         "    visibility = ['//visibility:public'],",
         ")",
     ]),
-    sha256 = "4924ccda4a5d6ee830813efb86966bed8f7caf5a19e9cc1b27fa4e288e57a250",
+    sha256 = "f20594572b6468c37fd0f725f6169741e065839dfc750c6d19ec99a8940e7f01",
     url = "https://plugins.jetbrains.com/files/1347/105697/scala-intellij-bin-2020.3.18.zip",
 )
 
