@@ -2,32 +2,39 @@
 
 # The current indirect ij_product mapping (eg. "intellij-latest")
 INDIRECT_IJ_PRODUCTS = {
-    "intellij-latest": "intellij-2020.2",
-    "intellij-latest-mac": "intellij-2020.2-mac",
-    "intellij-beta": "intellij-2020.2",
-    "intellij-canary": "intellij-2020.3",
-    "intellij-ue-latest": "intellij-ue-2020.2",
-    "intellij-ue-latest-mac": "intellij-ue-2020.2-mac",
-    "intellij-ue-beta": "intellij-ue-2020.2",
-    "intellij-ue-canary": "intellij-ue-2020.3",
+    # Indirect ij_product mapping for internal Blaze Plugin
+    "intellij-latest": "intellij-2020.3",
+    "intellij-latest-mac": "intellij-2020.3-mac",
+    "intellij-beta": "intellij-2021.1",
+    "intellij-canary": "intellij-2021.1",
+    "intellij-ue-latest": "intellij-ue-2020.3",
+    "intellij-ue-latest-mac": "intellij-ue-2020.3-mac",
+    "intellij-ue-beta": "intellij-ue-2021.1",
+    "intellij-ue-canary": "intellij-ue-2021.1",
     "android-studio-latest": "android-studio-4.2",
     "android-studio-beta": "android-studio-4.2",
     "android-studio-beta-mac": "android-studio-4.2-mac",
     "android-studio-canary": "android-studio-2020.3",
-    "clion-latest": "clion-2020.1",
-    "clion-latest-mac": "clion-2020.1-mac",
-    "clion-beta": "clion-2020.2",
+    "clion-latest": "clion-2020.3",
+    "clion-latest-mac": "clion-2020.3-mac",
+    "clion-beta": "clion-2021.1",
+    "clion-under-dev": "clion-2021.1",
+    # Indirect ij_product mapping for Bazel Plugin OSS
+    "intellij-oss-stable": "intellij-2020.3",
+    "intellij-oss-beta": "intellij-2021.1",
+    "intellij-oss-under-dev": "intellij-2021.2",
+    "intellij-ue-oss-stable": "intellij-ue-2020.3",
+    "intellij-ue-oss-beta": "intellij-ue-2021.1",
+    "intellij-ue-oss-under-dev": "intellij-ue-2021.2",
+    "android-studio-oss-stable": "android-studio-4.2",
+    "android-studio-oss-beta": "android-studio-4.2",
+    "android-studio-oss-under-dev": "android-studio-2020.3",
+    "clion-oss-stable": "clion-2020.3",
+    "clion-oss-beta": "clion-2021.1",
+    "clion-oss-under-dev": "clion-2021.1",
 }
 
 DIRECT_IJ_PRODUCTS = {
-    "intellij-2020.1": struct(
-        ide = "intellij",
-        directory = "intellij_ce_2020_1",
-    ),
-    "intellij-2020.1-mac": struct(
-        ide = "intellij",
-        directory = "intellij_ce_2020_1",
-    ),
     "intellij-2020.2": struct(
         ide = "intellij",
         directory = "intellij_ce_2020_2",
@@ -44,13 +51,21 @@ DIRECT_IJ_PRODUCTS = {
         ide = "intellij",
         directory = "intellij_ce_2020_3",
     ),
-    "intellij-ue-2020.1": struct(
-        ide = "intellij-ue",
-        directory = "intellij_ue_2020_1",
+    "intellij-2021.1": struct(
+        ide = "intellij",
+        directory = "intellij_ce_2021_1",
     ),
-    "intellij-ue-2020.1-mac": struct(
-        ide = "intellij-ue",
-        directory = "intellij_ue_2020_1",
+    "intellij-2021.1-mac": struct(
+        ide = "intellij",
+        directory = "intellij_ce_2021_1",
+    ),
+    "intellij-2021.2": struct(
+        ide = "intellij",
+        directory = "intellij_ce_2021_2",
+    ),
+    "intellij-2021.2-mac": struct(
+        ide = "intellij",
+        directory = "intellij_ce_2021_2",
     ),
     "intellij-ue-2020.2": struct(
         ide = "intellij-ue",
@@ -68,9 +83,21 @@ DIRECT_IJ_PRODUCTS = {
         ide = "intellij-ue",
         directory = "intellij_ue_2020_3",
     ),
-    "android-studio-4.1": struct(
-        ide = "android-studio",
-        directory = "android_studio_4_1",
+    "intellij-ue-2021.1": struct(
+        ide = "intellij-ue",
+        directory = "intellij_ue_2021_1",
+    ),
+    "intellij-ue-2021.1-mac": struct(
+        ide = "intellij-ue",
+        directory = "intellij_ue_2021_1",
+    ),
+    "intellij-ue-2021.2": struct(
+        ide = "intellij-ue",
+        directory = "intellij_ue_2021_2",
+    ),
+    "intellij-ue-2021.2-mac": struct(
+        ide = "intellij-ue",
+        directory = "intellij_ue_2021_2",
     ),
     "android-studio-4.2": struct(
         ide = "android-studio",
@@ -84,14 +111,6 @@ DIRECT_IJ_PRODUCTS = {
         ide = "android-studio",
         directory = "android_studio_2020_3",
     ),
-    "clion-2020.1": struct(
-        ide = "clion",
-        directory = "clion_2020_1",
-    ),
-    "clion-2020.1-mac": struct(
-        ide = "clion",
-        directory = "clion_2020_1",
-    ),
     "clion-2020.2": struct(
         ide = "clion",
         directory = "clion_2020_2",
@@ -99,6 +118,22 @@ DIRECT_IJ_PRODUCTS = {
     "clion-2020.2-mac": struct(
         ide = "clion",
         directory = "clion_2020_2",
+    ),
+    "clion-2020.3": struct(
+        ide = "clion",
+        directory = "clion_2020_3",
+    ),
+    "clion-2020.3-mac": struct(
+        ide = "clion",
+        directory = "clion_2020_3",
+    ),
+    "clion-2021.1": struct(
+        ide = "clion",
+        directory = "clion_2021_1",
+    ),
+    "clion-2021.1-mac": struct(
+        ide = "clion",
+        directory = "clion_2021_1",
     ),
 }
 
@@ -230,3 +265,60 @@ def select_from_plugin_api_directory(intellij, android_studio, clion, intellij_u
     params["default"] = params[INDIRECT_IJ_PRODUCTS["intellij-latest"]]
 
     return select_for_plugin_api(params)
+
+def select_from_plugin_api_version_directory(params):
+    """Selects for a plugin_api direct version based on its directory.
+
+    Args:
+        params: A dict with ij_product -> value.
+                You may only include direct ij_products here,
+                not indirects (eg. intellij-latest).
+    Returns:
+        A select statement on all plugin_apis. Unless you include a "default",
+        a non-matched plugin_api will result in an error.
+    """
+    for indirect_ij_product in INDIRECT_IJ_PRODUCTS:
+        if indirect_ij_product in params:
+            error_message = "".join([
+                "Do not select on indirect ij_product %s. " % indirect_ij_product,
+                "Instead, select on an exact ij_product.",
+            ])
+            fail(error_message)
+
+    # Map (direct ij_product) -> corresponding value relative to product directory
+    for ij_product, value in params.items():
+        if ij_product != "default":
+            params[ij_product] = [_plugin_api_directory(DIRECT_IJ_PRODUCTS[ij_product]) + item for item in value]
+
+    return _do_select_for_plugin_api(params)
+
+def no_mockito_extensions(name, jars, **kwargs):
+    """Removes mockito extensions from jars.
+
+    Args:
+        name: Name of the resulting java_import target.
+        jars: List of jars from which to remove mockito extensions.
+        **kwargs: Arbitrary attributes for the java_import target.
+    """
+
+    output_jars = []
+    for input_jar in jars:
+        output_jar_name = name + "_" + input_jar.replace("/", "_")
+        output_jar = name + "/" + input_jar
+        native.genrule(
+            name = output_jar_name,
+            srcs = [input_jar],
+            outs = [output_jar],
+            cmd = """
+            cp "$<" "$@"
+            chmod u+w "$@"
+            zip -d "$@" mockito-extensions/*
+            """,
+        )
+        output_jars.append(output_jar_name)
+
+    native.java_import(
+        name = name,
+        jars = output_jars,
+        **kwargs
+    )

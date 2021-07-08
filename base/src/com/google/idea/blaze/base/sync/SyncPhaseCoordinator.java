@@ -29,6 +29,7 @@ import com.google.idea.blaze.base.async.executor.ProgressiveTaskWithProgressIndi
 import com.google.idea.blaze.base.command.BlazeInvocationContext.ContextType;
 import com.google.idea.blaze.base.experiments.ExperimentScope;
 import com.google.idea.blaze.base.ideinfo.TargetKey;
+import com.google.idea.blaze.base.issueparser.BlazeIssueParser;
 import com.google.idea.blaze.base.issueparser.IssueOutputFilter;
 import com.google.idea.blaze.base.logging.EventLoggingService;
 import com.google.idea.blaze.base.logging.utils.SyncStats;
@@ -52,6 +53,7 @@ import com.google.idea.blaze.base.scope.scopes.ProgressIndicatorScope;
 import com.google.idea.blaze.base.scope.scopes.TimingScope;
 import com.google.idea.blaze.base.scope.scopes.TimingScope.EventType;
 import com.google.idea.blaze.base.scope.scopes.TimingScopeListener.TimedEvent;
+import com.google.idea.blaze.base.scope.scopes.ToolWindowScope;
 import com.google.idea.blaze.base.settings.Blaze;
 import com.google.idea.blaze.base.settings.BlazeImportSettings;
 import com.google.idea.blaze.base.settings.BlazeImportSettingsManager;
@@ -64,10 +66,10 @@ import com.google.idea.blaze.base.sync.data.BlazeProjectDataManager;
 import com.google.idea.blaze.base.sync.data.BlazeProjectDataManagerImpl;
 import com.google.idea.blaze.base.sync.libraries.BlazeLibraryCollector;
 import com.google.idea.blaze.base.sync.projectstructure.ModuleFinder;
+import com.google.idea.blaze.base.toolwindow.Task;
 import com.google.idea.blaze.base.util.SaveUtil;
 import com.google.idea.common.experiments.BoolExperiment;
 import com.google.idea.common.util.ConcurrencyUtil;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
@@ -221,7 +223,9 @@ final class SyncPhaseCoordinator {
                           params,
                           context,
                           indicator,
-                          singleThreaded ? SyncPhase.ALL_PHASES : SyncPhase.BUILD);
+                          singleThreaded ? SyncPhase.ALL_PHASES : SyncPhase.BUILD,
+                          new Task(params.title(), Task.Type.BLAZE_SYNC),
+                          /* startTaskOnScopeBegin= */ true);
                       runSync(params, singleThreaded, context);
                     }));
   }
@@ -250,7 +254,13 @@ final class SyncPhaseCoordinator {
                                   .setBackgroundSync(true)
                                   .build();
                           BlazeSyncParams params = finalizeSyncParams(syncParams, context);
-                          setupScopes(params, context, indicator, SyncPhase.ALL_PHASES);
+                          setupScopes(
+                              params,
+                              context,
+                              indicator,
+                              SyncPhase.ALL_PHASES,
+                              new Task(params.title(), Task.Type.BLAZE_SYNC),
+                              /* startTaskOnScopeBegin= */ true);
                           doFilterProjectTargets(params, filter, context);
                         }));
   }
@@ -393,7 +403,7 @@ final class SyncPhaseCoordinator {
       if (singleThreaded) {
         updateProjectAndFinishSync(task, context);
       } else {
-        queueUpdateTask(task);
+        queueUpdateTask(task, context.getScope(ToolWindowScope.class), params);
       }
     } catch (Throwable e) {
       logSyncError(context, e);
@@ -408,7 +418,8 @@ final class SyncPhaseCoordinator {
     }
   }
 
-  private void queueUpdateTask(UpdatePhaseTask task) {
+  private void queueUpdateTask(
+      UpdatePhaseTask task, @Nullable ToolWindowScope syncToolWindowScope, BlazeSyncParams params) {
     synchronized (this) {
       if (pendingUpdateTask != null) {
         // there's already a pending job, no need to kick off another one
@@ -417,6 +428,18 @@ final class SyncPhaseCoordinator {
       }
       pendingUpdateTask = task;
     }
+
+    Task toolWindowTask;
+    boolean startTaskOnScopeBegin;
+    if (syncToolWindowScope == null) {
+      toolWindowTask = new Task(params.title(), Task.Type.BLAZE_SYNC);
+      startTaskOnScopeBegin = true;
+    } else {
+      toolWindowTask = syncToolWindowScope.getTask();
+      syncToolWindowScope.setFinishTaskOnScopeEnd(false);
+      startTaskOnScopeBegin = false;
+    }
+
     ProgressiveTaskWithProgressIndicator.builder(project, "Syncing Project")
         .setExecutor(singleThreadedExecutor)
         .submitTaskLater(
@@ -425,7 +448,12 @@ final class SyncPhaseCoordinator {
                     context -> {
                       UpdatePhaseTask updateTask = getAndClearPendingTask();
                       setupScopes(
-                          updateTask.syncParams(), context, indicator, SyncPhase.PROJECT_UPDATE);
+                          updateTask.syncParams(),
+                          context,
+                          indicator,
+                          SyncPhase.PROJECT_UPDATE,
+                          toolWindowTask,
+                          startTaskOnScopeBegin);
                       updateProjectAndFinishSync(updateTask, context);
                     }));
   }
@@ -574,7 +602,9 @@ final class SyncPhaseCoordinator {
       BlazeSyncParams syncParams,
       BlazeContext context,
       ProgressIndicator indicator,
-      SyncPhase phase) {
+      SyncPhase phase,
+      Task task,
+      boolean startTaskOnScopeBegin) {
     boolean clearProblems = phase != SyncPhase.PROJECT_UPDATE;
     boolean notifyFinished = phase != SyncPhase.BUILD;
 
@@ -586,6 +616,18 @@ final class SyncPhaseCoordinator {
 
     BlazeUserSettings userSettings = BlazeUserSettings.getInstance();
     context
+        .push(
+            new ToolWindowScope.Builder(project, task)
+                .setStartTaskOnScopeBegin(startTaskOnScopeBegin)
+                .setProgressIndicator(indicator)
+                .setPopupBehavior(
+                    syncParams.backgroundSync()
+                        ? FocusBehavior.NEVER
+                        : userSettings.getShowBlazeConsoleOnSync())
+                .setIssueParsers(
+                    BlazeIssueParser.defaultIssueParsers(
+                        project, WorkspaceRoot.fromProject(project), ContextType.Sync))
+                .build())
         .push(
             new BlazeConsoleScope.Builder(project, indicator)
                 .setPopupBehavior(
@@ -651,24 +693,19 @@ final class SyncPhaseCoordinator {
               new TimingScope("UpdateInMemoryState", EventType.Other)
                   .addScopeListener((events, duration) -> timedEvents.addAll(events)));
           context.output(new StatusOutput("Updating in-memory state..."));
-          ApplicationManager.getApplication()
-              .runReadAction(
-                  () -> {
-                    Module workspaceModule =
-                        ModuleFinder.getInstance(project)
-                            .findModuleByName(BlazeDataStorage.WORKSPACE_MODULE_NAME);
-                    for (BlazeSyncPlugin blazeSyncPlugin :
-                        BlazeSyncPlugin.EP_NAME.getExtensions()) {
-                      blazeSyncPlugin.updateInMemoryState(
-                          project,
-                          context,
-                          WorkspaceRoot.fromProject(project),
-                          projectViewSet,
-                          blazeProjectData,
-                          workspaceModule,
-                          syncMode);
-                    }
-                  });
+          Module workspaceModule =
+              ModuleFinder.getInstance(project)
+                  .findModuleByName(BlazeDataStorage.WORKSPACE_MODULE_NAME);
+          for (BlazeSyncPlugin blazeSyncPlugin : BlazeSyncPlugin.EP_NAME.getExtensions()) {
+            blazeSyncPlugin.updateInMemoryState(
+                project,
+                context,
+                WorkspaceRoot.fromProject(project),
+                projectViewSet,
+                blazeProjectData,
+                workspaceModule,
+                syncMode);
+          }
         });
     return timedEvents;
   }

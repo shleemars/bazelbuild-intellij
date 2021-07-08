@@ -1,6 +1,28 @@
-v2021.03.02
+v2021.06.29
+===========
+* [Beta channel] IntelliJ: Compatible with IntelliJ CE/UE 2021.1.
+* [Beta channel] CLion: Compatible with CLion 2021.1.
+
+v2021.06.15
 ===========
 * Bug fixes and internal cleanup.
+
+v2021.05.11
+===========
+* Kotlin: Generate correct run configurations for non-small tests.
+
+v2021.04.26
+===========
+* GoLand: Fixed an issue with importing a Bazel project in Goland.
+* Tests: Run all targets recursively under a chosen directory.
+* Fixed resolution of generated code (e.g. protobufs) after project restart in Typescript and Go.
+
+v2021.04.07
+===========
+* IntelliJ: Compatible with IntelliJ CE/UE 2020.3.
+* 2020.3+ versions: Integrate Bazel-based IntelliJ projects into the new
+  IntelliJ Welcome screen.
+* Fix displaying/modifying code style settings for BUILD files.
 
 v2021.02.02
 ===========

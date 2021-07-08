@@ -26,6 +26,7 @@ import com.google.idea.blaze.base.settings.BlazeImportSettings;
 import com.google.idea.blaze.base.settings.BlazeImportSettingsManager;
 import com.google.idea.blaze.base.settings.BuildSystem;
 import com.google.idea.blaze.base.sync.SyncCache;
+import com.google.idea.sdkcompat.testframework.EdtTestUtilWrapper;
 import com.google.idea.testing.EdtRule;
 import com.google.idea.testing.IntellijTestSetupRule;
 import com.google.idea.testing.ServiceHelper;
@@ -36,11 +37,13 @@ import com.intellij.openapi.extensions.ExtensionPointName;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.ProjectJdkTable;
 import com.intellij.openapi.projectRoots.Sdk;
+import com.intellij.openapi.roots.libraries.Library;
+import com.intellij.openapi.roots.libraries.LibraryTable;
+import com.intellij.openapi.roots.libraries.LibraryTablesRegistrar;
 import com.intellij.openapi.util.SystemInfo;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.newvfs.RefreshQueue;
 import com.intellij.openapi.vfs.newvfs.RefreshSession;
-import com.intellij.testFramework.EdtTestUtil;
 import com.intellij.testFramework.IdeaTestUtil;
 import com.intellij.testFramework.UsefulTestCase;
 import com.intellij.testFramework.fixtures.CodeInsightTestFixture;
@@ -94,7 +97,7 @@ public abstract class BlazeIntegrationTestCase {
   protected WorkspaceFileSystem workspace;
 
   @Before
-  public final void setUp() throws Exception {
+  public final void setUp() throws Throwable {
     testFixture = createTestFixture();
     testFixture.setUp();
     fileSystem =
@@ -153,7 +156,7 @@ public abstract class BlazeIntegrationTestCase {
   }
 
   @After
-  public final void tearDown() throws Exception {
+  public final void tearDown() throws Throwable {
     if (!isLightTestCase()) {
       // Workaround to avoid a platform race condition that occurs when we delete a VirtualDirectory
       // whose children were affected by external file system events that RefreshQueue is still
@@ -167,17 +170,24 @@ public abstract class BlazeIntegrationTestCase {
     SyncCache.getInstance(getProject()).clear();
     runWriteAction(
         () -> {
+          // Clear attached jdks
           ProjectJdkTable table = ProjectJdkTable.getInstance();
           for (Sdk sdk : ProjectJdkTable.getInstance().getAllJdks()) {
             table.removeJdk(sdk);
+          }
+          // Clear attached libraries
+          LibraryTable libraryTable =
+              LibraryTablesRegistrar.getInstance().getLibraryTable(getProject());
+          for (Library library : libraryTable.getLibraries()) {
+            libraryTable.removeLibrary(library);
           }
         });
     testFixture.tearDown();
     testFixture = null;
   }
 
-  private static void runWriteAction(Runnable writeAction) {
-    EdtTestUtil.runInEdtAndWait(
+  private static void runWriteAction(Runnable writeAction) throws Throwable {
+    EdtTestUtilWrapper.runInEdtAndWait(
         () -> ApplicationManager.getApplication().runWriteAction(writeAction));
   }
 

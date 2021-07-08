@@ -48,6 +48,8 @@ public abstract class BuildPhaseSyncStats {
 
   public abstract Duration totalTime();
 
+  public abstract ShardStats shardStats();
+
   public static Builder builder() {
     return new AutoValue_BuildPhaseSyncStats.Builder()
         .setTargets(ImmutableList.of())
@@ -59,7 +61,8 @@ public abstract class BuildPhaseSyncStats {
         .setBuildResult(BuildResult.FATAL_ERROR)
         .setTimedEvents(ImmutableList.of())
         .setBuildIds(ImmutableList.of())
-        .setTotalTime(Duration.ZERO);
+        .setTotalTime(Duration.ZERO)
+        .setShardStats(ShardStats.builder().build());
   }
   /** Auto value builder for SyncStats. */
   @AutoValue.Builder
@@ -83,6 +86,8 @@ public abstract class BuildPhaseSyncStats {
     public abstract Builder setBuildIds(ImmutableList<String> buildIds);
 
     public abstract Builder setTotalTime(Duration totalTime);
+
+    public abstract Builder setShardStats(ShardStats shardStats);
 
     public abstract BuildPhaseSyncStats build();
   }
