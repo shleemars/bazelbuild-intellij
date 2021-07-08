@@ -40,7 +40,7 @@
     <action id="Blaze.FullSyncProject"
       class="com.google.idea.blaze.base.sync.actions.FullSyncProjectAction"
       text="Non-Incrementally Sync Project with BUILD Files"
-      icon="BlazeIcons.BlazeSlow">
+      icon="BlazeIcons.Logo">
     </action>
     <action id="Blaze.SyncWorkingSet"
       class="com.google.idea.blaze.base.sync.actions.SyncWorkingSetAction"
