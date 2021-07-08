@@ -15,6 +15,7 @@
  */
 package com.google.idea.blaze.base.toolwindow;
 
+import com.google.idea.blaze.base.console.BlazeConsoleExperimentManager;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
@@ -35,13 +36,13 @@ public class TasksToolWindowFactory implements DumbAware, ToolWindowFactory {
 
   @Override
   public void createToolWindowContent(Project project, ToolWindow toolWindow) {
-    String title = "Build Tasks (NEW):"; // TODO(olegsa) remove "(NEW)", and find some better name
+    String title = "Build Tasks (NEW)"; // TODO(olegsa) remove "(NEW)", and find some better name
     toolWindow.setTitle(title);
     toolWindow.setStripeTitle(title);
   }
 
   @Override
   public boolean shouldBeAvailable(Project project) {
-    return TasksToolWindowService.isExperimentEnabled();
+    return BlazeConsoleExperimentManager.isBlazeConsoleV2Enabled();
   }
 }

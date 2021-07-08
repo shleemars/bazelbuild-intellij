@@ -15,10 +15,15 @@
  */
 package com.google.idea.blaze.android.projectsystem;
 
+import com.android.ide.common.util.PathString;
 import com.android.projectmodel.ExternalLibrary;
+import com.android.projectmodel.ExternalLibraryImpl;
+import com.android.projectmodel.SelectiveResourceFolder;
 import com.android.tools.idea.projectsystem.AndroidModuleSystem;
+import com.android.tools.idea.projectsystem.DependencyScopeType;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.idea.blaze.android.libraries.UnpackedAars;
 import com.google.idea.blaze.android.sync.model.AarLibrary;
 import com.google.idea.blaze.android.sync.model.AndroidResourceModuleRegistry;
 import com.google.idea.blaze.android.sync.model.BlazeAndroidSyncData;
@@ -30,24 +35,45 @@ import com.google.idea.blaze.base.sync.SyncCache;
 import com.google.idea.blaze.base.sync.data.BlazeProjectDataManager;
 import com.google.idea.blaze.base.sync.libraries.BlazeLibraryCollector;
 import com.google.idea.blaze.base.sync.workspace.ArtifactLocationDecoder;
+import com.google.idea.blaze.java.libraries.JarCache;
 import com.google.idea.blaze.java.sync.model.BlazeJarLibrary;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
+import java.io.File;
 import java.util.Collection;
+import org.jetbrains.annotations.Nullable;
 
 /** Blaze implementation of {@link AndroidModuleSystem}. */
-public class BlazeModuleSystem extends BlazeModuleSystemBase {
+public class BlazeModuleSystem extends BlazeModuleSystemBase implements BlazeClassFileFinder {
   BlazeModuleSystem(Module module) {
     super(module);
   }
 
-  // @Override #api4.0
-  public Collection<ExternalLibrary> getResolvedLibraryDependencies() {
-    return getResolvedDependentLibraries();
+  @Override
+  public boolean shouldSkipResourceRegistration() {
+    return classFileFinder.shouldSkipResourceRegistration();
   }
 
-  // @Override #api4.0
+  @Override
+  @Nullable
+  public VirtualFile findClassFile(String fqcn) {
+    return classFileFinder.findClassFile(fqcn);
+  }
+
+  @Override
+  public Collection<ExternalLibrary> getResolvedLibraryDependencies() {
+    return getDependentLibraries();
+  }
+
+  // @Override
   public Collection<ExternalLibrary> getResolvedDependentLibraries() {
+    return getDependentLibraries();
+  }
+
+  // @Override #as42: Method added in AS 203
+  public Collection<ExternalLibrary> getResolvedLibraryDependencies(
+      DependencyScopeType dependencyScopeType) {
     return getDependentLibraries();
   }
 
@@ -122,5 +148,50 @@ public class BlazeModuleSystem extends BlazeModuleSystemBase {
       }
     }
     return libraries.build();
+  }
+
+  @Nullable
+  static ExternalLibrary toExternalLibrary(
+      Project project, AarLibrary library, ArtifactLocationDecoder decoder) {
+    UnpackedAars unpackedAars = UnpackedAars.getInstance(project);
+    File aarFile = unpackedAars.getAarDir(decoder, library);
+    if (aarFile == null) {
+      logger.warn(
+          String.format(
+              "Fail to locate AAR file %s. Re-sync the project may solve the problem",
+              library.aarArtifact));
+      return null;
+    }
+    File resFolder = unpackedAars.getResourceDirectory(decoder, library);
+    PathString resFolderPathString = resFolder == null ? null : new PathString(resFolder);
+    return new ExternalLibraryImpl(library.key.toString())
+        .withLocation(new PathString(aarFile))
+        .withManifestFile(
+            resFolderPathString == null
+                ? null
+                : resFolderPathString.getParentOrRoot().resolve("AndroidManifest.xml"))
+        .withResFolder(
+            resFolderPathString == null
+                ? null
+                : new SelectiveResourceFolder(resFolderPathString, null))
+        .withSymbolFile(
+            resFolderPathString == null
+                ? null
+                : resFolderPathString.getParentOrRoot().resolve("R.txt"))
+        .withPackageName(library.resourcePackage);
+  }
+
+  @Nullable
+  static ExternalLibrary toExternalLibrary(
+      Project project, BlazeJarLibrary library, ArtifactLocationDecoder decoder) {
+    File cachedJar = JarCache.getInstance(project).getCachedJar(decoder, library);
+    if (cachedJar == null) {
+      logger.warn(
+          String.format(
+              "Failed to locate jar file %s. Re-sync project may solve the problem", library));
+      return null;
+    }
+    return new ExternalLibraryImpl(library.toString())
+        .withClassJars(ImmutableList.of(new PathString(cachedJar)));
   }
 }

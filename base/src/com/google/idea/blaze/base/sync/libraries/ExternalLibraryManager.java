@@ -23,8 +23,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.idea.blaze.base.model.BlazeProjectData;
-import com.google.idea.blaze.base.model.primitives.WorkspaceRoot;
-import com.google.idea.blaze.base.projectview.ProjectViewSet;
 import com.google.idea.blaze.base.scope.BlazeContext;
 import com.google.idea.blaze.base.sync.BlazeSyncPlugin;
 import com.google.idea.blaze.base.sync.SyncListener;
@@ -32,11 +30,13 @@ import com.google.idea.blaze.base.sync.SyncMode;
 import com.google.idea.blaze.base.sync.SyncResult;
 import com.google.idea.blaze.base.sync.data.BlazeProjectDataManager;
 import com.google.idea.blaze.base.vcs.VcsSyncListener;
+import com.google.idea.common.util.Transactions;
+import com.intellij.openapi.Disposable;
 import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.module.Module;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.AdditionalLibraryRootsProvider;
-import com.intellij.openapi.roots.ModifiableRootModel;
+import com.intellij.openapi.roots.ex.ProjectRootManagerEx;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.newvfs.events.VFileDeleteEvent;
 import com.intellij.openapi.vfs.newvfs.events.VFileEvent;
@@ -50,7 +50,9 @@ import javax.annotation.Nullable;
  * External library manager that rebuilds {@link BlazeExternalSyntheticLibrary}s during sync, and
  * updates individual {@link VirtualFile} entries in response to VFS events.
  */
-public class ExternalLibraryManager {
+public class ExternalLibraryManager implements Disposable {
+
+  private static final Logger logger = Logger.getInstance(ExternalLibraryManager.class);
   private final Project project;
   private volatile boolean duringBlazeSync;
   private volatile ImmutableMap<
@@ -80,7 +82,7 @@ public class ExternalLibraryManager {
                 libraries.values().forEach(library -> library.removeInvalidFiles(deletedFiles));
               }
             },
-            project);
+            this);
   }
 
   @Nullable
@@ -108,6 +110,9 @@ public class ExternalLibraryManager {
             .collect(toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 
+  @Override
+  public void dispose() {}
+
   /**
    * Sync listener to prevent external libraries from being accessed during sync to avoid spamming
    * {@link VirtualFile#isValid()} errors.
@@ -131,6 +136,18 @@ public class ExternalLibraryManager {
             BlazeProjectDataManager.getInstance(project).getBlazeProjectData();
         if (blazeProjectData != null) {
           manager.initialize(blazeProjectData);
+          manager.duringBlazeSync = false;
+          if (!manager.libraries.isEmpty()) {
+            // TODO(b/192431174): Consider not triggering `project roots have changed` events.
+            logger.info(
+                "External libraries have been attached to the project. Triggering a `project roots"
+                    + " have changed` event so the external libraries can be indexed.");
+            Transactions.submitWriteActionTransaction(
+                manager,
+                () ->
+                    ProjectRootManagerEx.getInstanceEx(project)
+                        .makeRootsChange(() -> {}, /* fileTypes= */ false, /* fireEvents= */ true));
+          }
         }
       }
       manager.duringBlazeSync = false;
@@ -143,19 +160,11 @@ public class ExternalLibraryManager {
    */
   static class SyncPlugin implements BlazeSyncPlugin {
     @Override
-    public void updateProjectStructure(
-        Project project,
-        BlazeContext context,
-        WorkspaceRoot workspaceRoot,
-        ProjectViewSet projectViewSet,
-        BlazeProjectData blazeProjectData,
-        @Nullable BlazeProjectData oldBlazeProjectData,
-        ModuleEditor moduleEditor,
-        Module workspaceModule,
-        ModifiableRootModel workspaceModifiableModel) {
+    public boolean refreshExecutionRoot(Project project, BlazeProjectData blazeProjectData) {
       ExternalLibraryManager manager = ExternalLibraryManager.getInstance(project);
       manager.initialize(blazeProjectData);
       manager.duringBlazeSync = false;
+      return true;
     }
   }
 

@@ -10,6 +10,7 @@ load(
     "select_for_ide",
     "select_for_plugin_api",
     "select_from_plugin_api_directory",
+    "select_from_plugin_api_version_directory",
 )
 
 licenses(["notice"])  # Apache2
@@ -61,6 +62,48 @@ config_setting(
 )
 
 config_setting(
+    name = "intellij-oss-stable",
+    values = {
+        "define": "ij_product=intellij-oss-stable",
+    },
+)
+
+config_setting(
+    name = "intellij-ue-oss-stable",
+    values = {
+        "define": "ij_product=intellij-ue-oss-stable",
+    },
+)
+
+config_setting(
+    name = "intellij-oss-beta",
+    values = {
+        "define": "ij_product=intellij-oss-beta",
+    },
+)
+
+config_setting(
+    name = "intellij-ue-oss-beta",
+    values = {
+        "define": "ij_product=intellij-ue-oss-beta",
+    },
+)
+
+config_setting(
+    name = "intellij-oss-under-dev",
+    values = {
+        "define": "ij_product=intellij-oss-under-dev",
+    },
+)
+
+config_setting(
+    name = "intellij-ue-oss-under-dev",
+    values = {
+        "define": "ij_product=intellij-ue-oss-under-dev",
+    },
+)
+
+config_setting(
     name = "intellij-canary",
     values = {
         "define": "ij_product=intellij-canary",
@@ -71,21 +114,6 @@ config_setting(
     name = "intellij-ue-canary",
     values = {
         "define": "ij_product=intellij-ue-canary",
-    },
-)
-
-config_setting(
-    name = "intellij-2020.1",
-    values = {
-        "define": "ij_product=intellij-2020.1",
-    },
-)
-
-config_setting(
-    name = "intellij-2020.1-mac",
-    values = {
-        "cpu": "darwin_x86_64",
-        "define": "ij_product=intellij-2020.1",
     },
 )
 
@@ -105,6 +133,36 @@ config_setting(
 )
 
 config_setting(
+    name = "intellij-2021.1",
+    values = {
+        "define": "ij_product=intellij-2021.1",
+    },
+)
+
+config_setting(
+    name = "intellij-2021.1-mac",
+    values = {
+        "cpu": "darwin_x86_64",
+        "define": "ij_product=intellij-2021.1",
+    },
+)
+
+config_setting(
+    name = "intellij-2021.2",
+    values = {
+        "define": "ij_product=intellij-2021.2",
+    },
+)
+
+config_setting(
+    name = "intellij-2021.2-mac",
+    values = {
+        "cpu": "darwin_x86_64",
+        "define": "ij_product=intellij-2021.2",
+    },
+)
+
+config_setting(
     name = "intellij-2020.3",
     values = {
         "define": "ij_product=intellij-2020.3",
@@ -116,21 +174,6 @@ config_setting(
     values = {
         "cpu": "darwin_x86_64",
         "define": "ij_product=intellij-2020.3",
-    },
-)
-
-config_setting(
-    name = "intellij-ue-2020.1",
-    values = {
-        "define": "ij_product=intellij-ue-2020.1",
-    },
-)
-
-config_setting(
-    name = "intellij-ue-2020.1-mac",
-    values = {
-        "cpu": "darwin_x86_64",
-        "define": "ij_product=intellij-ue-2020.1",
     },
 )
 
@@ -165,6 +208,36 @@ config_setting(
 )
 
 config_setting(
+    name = "intellij-ue-2021.1",
+    values = {
+        "define": "ij_product=intellij-ue-2021.1",
+    },
+)
+
+config_setting(
+    name = "intellij-ue-2021.1-mac",
+    values = {
+        "cpu": "darwin_x86_64",
+        "define": "ij_product=intellij-ue-2021.1",
+    },
+)
+
+config_setting(
+    name = "intellij-ue-2021.2",
+    values = {
+        "define": "ij_product=intellij-ue-2021.2",
+    },
+)
+
+config_setting(
+    name = "intellij-ue-2021.2-mac",
+    values = {
+        "cpu": "darwin_x86_64",
+        "define": "ij_product=intellij-ue-2021.2",
+    },
+)
+
+config_setting(
     name = "android-studio-latest",
     values = {
         "define": "ij_product=android-studio-latest",
@@ -194,9 +267,23 @@ config_setting(
 )
 
 config_setting(
-    name = "android-studio-4.1",
+    name = "android-studio-oss-stable",
     values = {
-        "define": "ij_product=android-studio-4.1",
+        "define": "ij_product=android-studio-oss-stable",
+    },
+)
+
+config_setting(
+    name = "android-studio-oss-beta",
+    values = {
+        "define": "ij_product=android-studio-oss-beta",
+    },
+)
+
+config_setting(
+    name = "android-studio-oss-under-dev",
+    values = {
+        "define": "ij_product=android-studio-oss-under-dev",
     },
 )
 
@@ -230,6 +317,27 @@ config_setting(
 )
 
 config_setting(
+    name = "clion-oss-stable",
+    values = {
+        "define": "ij_product=clion-oss-stable",
+    },
+)
+
+config_setting(
+    name = "clion-oss-beta",
+    values = {
+        "define": "ij_product=clion-oss-beta",
+    },
+)
+
+config_setting(
+    name = "clion-oss-under-dev",
+    values = {
+        "define": "ij_product=clion-oss-under-dev",
+    },
+)
+
+config_setting(
     name = "clion-latest-mac",
     values = {
         "cpu": "darwin_x86_64",
@@ -245,17 +353,9 @@ config_setting(
 )
 
 config_setting(
-    name = "clion-2020.1",
+    name = "clion-under-dev",
     values = {
-        "define": "ij_product=clion-2020.1",
-    },
-)
-
-config_setting(
-    name = "clion-2020.1-mac",
-    values = {
-        "cpu": "darwin_x86_64",
-        "define": "ij_product=clion-2020.1",
+        "define": "ij_product=clion-under-dev",
     },
 )
 
@@ -274,6 +374,36 @@ config_setting(
     },
 )
 
+config_setting(
+    name = "clion-2020.3",
+    values = {
+        "define": "ij_product=clion-2020.3",
+    },
+)
+
+config_setting(
+    name = "clion-2020.3-mac",
+    values = {
+        "cpu": "darwin_x86_64",
+        "define": "ij_product=clion-2020.3",
+    },
+)
+
+config_setting(
+    name = "clion-2021.1",
+    values = {
+        "define": "ij_product=clion-2021.1",
+    },
+)
+
+config_setting(
+    name = "clion-2021.1-mac",
+    values = {
+        "cpu": "darwin_x86_64",
+        "define": "ij_product=clion-2021.1",
+    },
+)
+
 # The purpose of this rule is to hide the versioning
 # complexity from users of this api.
 # There will be additional versions added in the future
@@ -283,11 +413,20 @@ java_library(
     exports = select_from_plugin_api_directory(
         android_studio = [
             ":sdk",
-            ":android_plugin",
+            ":java",
+            ":android",
             ":test_recorder",
+            ":platform_images",
         ],
-        clion = [":sdk"],
-        intellij = [":sdk"],
+        clion = [
+            ":sdk",
+            ":clion_plugins",
+        ],
+        intellij = [
+            ":sdk",
+            ":java",
+            ":platform_images",
+        ],
     ),
 )
 
@@ -335,22 +474,11 @@ java_library(
     testonly = 1,
     visibility = [":test_libs_visibility"],
     exports = [
-        ":objenesis",
         "//third_party:truth",
         "@bytebuddy-agent//jar",
         "@bytebuddy//jar",
         "@mockito//jar",
     ],
-)
-
-# The UI designer requires forms_rt.jar in the classpath.
-java_library(
-    name = "forms_rt",
-    exports = select_from_plugin_api_directory(
-        android_studio = [":forms_rt"],
-        clion = [":forms_rt"],
-        intellij = [":forms_rt"],
-    ),
 )
 
 # The version of guava bundled with the IntelliJ plugin API.
@@ -379,20 +507,21 @@ java_library(
 java_library(
     name = "jsr305",
     exports = select_for_plugin_api({
-        "clion-2020.1": [":bundled_jsr305"],
         "clion-2020.2": [":bundled_jsr305"],
-        "intellij-2020.1": [":bundled_jsr305"],
+        "clion-2020.3": [":bundled_jsr305"],
+        "clion-2021.1": [":bundled_jsr305"],
         "intellij-2020.2": [":bundled_jsr305"],
         "intellij-2020.3": [":bundled_jsr305"],
-        "intellij-ue-2020.1": ["@jsr305_annotations//jar"],
+        "intellij-2021.1": [":bundled_jsr305"],
+        "intellij-2021.2": ["@jsr305_annotations//jar"],
         "intellij-ue-2020.2": ["@jsr305_annotations//jar"],
         "intellij-ue-2020.3": [":bundled_jsr305"],
-        "android-studio-4.1": [":bundled_jsr305"],
+        "intellij-ue-2021.1": ["@jsr305_annotations//jar"],
+        "intellij-ue-2021.2": ["@jsr305_annotations//jar"],
         "android-studio-4.2": ["@jsr305_annotations//jar"],
         "android-studio-2020.3": ["@jsr305_annotations//jar"],
-        # Some test libraries depend on this, yet can be used without ij_product.
-        # Assume that if ij_product is missing, this dependency won't be used.
-        "default": [],
+        # We default to intellij-latest when no plugin api is selected.
+        "default": [":bundled_jsr305"],
     }),
 )
 
@@ -413,17 +542,6 @@ java_library(
     name = "truth",
     testonly = 1,
     exports = ["//third_party:truth"],
-)
-
-# The version of objenesis bundled with the IntelliJ plugin API
-java_library(
-    name = "objenesis",
-    neverlink = 1,
-    exports = select_from_plugin_api_directory(
-        android_studio = [":objenesis"],
-        clion = [":objenesis"],
-        intellij = [":objenesis"],
-    ),
 )
 
 # IntelliJ Coverage plugin
@@ -536,6 +654,23 @@ java_library(
     ),
 )
 
+# Not all plugin api versions have lib/resources.jar from which we used to get
+# the application information to set the idea-version compatibility range of the plugin.
+# However, product-info.json contains this information but it was not imported to google3
+# with previous plugin api versions. So the application_info_container will contain
+# the application_info_jar for previous versions and application_info_json for new ones.
+filegroup(
+    name = "application_info_container",
+    srcs = select_from_plugin_api_version_directory({
+        "intellij-2021.2": [":application_info_json"],
+        "intellij-ue-2021.2": [":application_info_json"],
+        "default": [":application_info_jar"],
+    }),
+)
+
+# #api211: product-info.json will be imported to google3 from 2021.2 on. Therefore after removing
+# 2021.1 support there will be no need for application_info_jar and application_info_container
+# and we can update api_version_txt script to depend only on application_info_json.
 filegroup(
     name = "application_info_jar",
     srcs = select_from_plugin_api_directory(

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 #
 # Copyright 2019 Google LLC
 #
@@ -149,9 +149,12 @@ def main():
   else:
     dom = minidom.parseString("<idea-plugin/>")
 
+  is_eap = False
   with open(args.api_version_txt) as f:
     api_version = f.readline().strip()
-
+    if api_version.endswith(" EAP"):
+      is_eap = True
+      api_version = api_version[:-4]
   new_elements = []
 
   idea_plugin = dom.documentElement
@@ -192,7 +195,10 @@ def main():
       idea_version_element.setAttribute("since-build",
                                         idea_version_build_element)
     if args.stamp_until_build:
-      until_version = _parse_major_version(api_version) + ".*"
+      if is_eap:
+        until_version = idea_version_build_element + ".*"
+      else:
+        until_version = _parse_major_version(api_version) + ".*"
       idea_version_element.setAttribute("until-build", until_version)
 
   if args.changelog_file:
@@ -244,12 +250,7 @@ def main():
   for new_element in new_elements:
     idea_plugin.appendChild(new_element)
 
-  if hasattr(sys.stdout, "buffer"):
-    sys.stdout.buffer.write(dom.toxml(encoding="utf-8"))
-  else:
-    # Python 2.x has no sys.stdout.buffer, but `print` still accepts byte
-    # strings.
-    print(dom.toxml(encoding="utf-8"))  # pylint: disable=superfluous-parens
+  sys.stdout.buffer.write(dom.toxml(encoding="utf-8"))
 
 
 if __name__ == "__main__":

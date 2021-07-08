@@ -17,10 +17,12 @@ package com.google.idea.blaze.android.sync.model.idea;
 
 import com.android.tools.idea.model.Namespacing;
 import com.android.tools.idea.projectsystem.NamedIdeaSourceProvider;
+import com.google.common.util.concurrent.ListenableFuture;
 import com.intellij.openapi.project.Project;
 import java.io.File;
+import javax.annotation.Nullable;
 
-/** Blaze model for an androidp project. #api42. */
+/** Blaze model for an android project. #api42. */
 public class BlazeAndroidModel extends BlazeAndroidModelBase {
   private final NamedIdeaSourceProvider sourceProvider;
 
@@ -28,7 +30,7 @@ public class BlazeAndroidModel extends BlazeAndroidModelBase {
       Project project,
       File rootDirPath,
       NamedIdeaSourceProvider sourceProvider,
-      String applicationId,
+      ListenableFuture<String> applicationId,
       int minSdkVersion,
       boolean desugarJava8Libs) {
     super(project, rootDirPath, applicationId, minSdkVersion, desugarJava8Libs);
@@ -42,5 +44,16 @@ public class BlazeAndroidModel extends BlazeAndroidModelBase {
   @Override
   public Namespacing getNamespacing() {
     return Namespacing.DISABLED;
+  }
+
+  @Nullable
+  @Override
+  public Integer getVersionCode() {
+    return null;
+  }
+
+  @Override
+  protected String uninitializedApplicationId() {
+    return "uninitialized.application.id";
   }
 }

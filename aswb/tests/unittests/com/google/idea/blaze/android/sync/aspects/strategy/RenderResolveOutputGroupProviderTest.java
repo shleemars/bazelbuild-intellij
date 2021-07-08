@@ -60,8 +60,6 @@ public class RenderResolveOutputGroupProviderTest extends BlazeTestCase {
     experiments.setExperimentString(
         BlazeClassFileFinderFactory.CLASS_FILE_FINDER_NAME,
         RenderJarClassFileFinder.CLASS_FINDER_KEY);
-    experiments.setFeatureRolloutExperiment(
-        BlazeClassFileFinderFactory.nonDefaultFinderEnableExperiment, 100);
   }
 
   /**
@@ -72,6 +70,20 @@ public class RenderResolveOutputGroupProviderTest extends BlazeTestCase {
   public void resolveOutputGroup_androidLanguageEnabled_renderResolveIsIncluded() {
     Set<LanguageClass> activeLanguages = ImmutableSet.of(LanguageClass.ANDROID);
     ImmutableSet<OutputGroup> outputGroups = ImmutableSet.of(OutputGroup.RESOLVE);
+    BlazeCommand.Builder builder = emptyBuilder();
+
+    aspectStrategy.addAspectAndOutputGroups(builder, outputGroups, activeLanguages, false);
+    assertThat(getOutputGroups(builder)).contains("intellij-render-resolve-android");
+  }
+
+  /**
+   * Tests intellij-render-resolve-android is included when android language is enabled and
+   * "compile" output group is attached.
+   */
+  @Test
+  public void compileOutputGroup_androidLanguageEnabled_renderResolveIsIncluded() {
+    Set<LanguageClass> activeLanguages = ImmutableSet.of(LanguageClass.ANDROID);
+    ImmutableSet<OutputGroup> outputGroups = ImmutableSet.of(OutputGroup.COMPILE);
     BlazeCommand.Builder builder = emptyBuilder();
 
     aspectStrategy.addAspectAndOutputGroups(builder, outputGroups, activeLanguages, false);
@@ -91,12 +103,13 @@ public class RenderResolveOutputGroupProviderTest extends BlazeTestCase {
   }
 
   /**
-   * Tests intellij-render-resolve-android is skipped when "resolve" output groups is not attached.
+   * Tests intellij-render-resolve-android is skipped when "resolve" and "compile" output groups are
+   * not attached.
    */
   @Test
-  public void infoAndCompileOutputGroups_renderResolveIsNotIncluded() {
+  public void infoOutputGroups_renderResolveIsNotIncluded() {
     Set<LanguageClass> activeLanguages = ImmutableSet.of(LanguageClass.ANDROID);
-    ImmutableSet<OutputGroup> outputGroups = ImmutableSet.of(OutputGroup.INFO, OutputGroup.COMPILE);
+    ImmutableSet<OutputGroup> outputGroups = ImmutableSet.of(OutputGroup.INFO);
     BlazeCommand.Builder builder = emptyBuilder();
 
     aspectStrategy.addAspectAndOutputGroups(builder, outputGroups, activeLanguages, false);
