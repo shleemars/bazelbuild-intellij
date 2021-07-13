@@ -38,8 +38,8 @@ http_archive(
 http_archive(
     name = "intellij_ce_2021_2",
     build_file = "@//intellij_platform_sdk:BUILD.idea212",
-    sha256 = "40adf4ab6a6a81159986b8dc4531c5c32022d4d1a0f89ed325812f710b606353",
-    url = "https://www.jetbrains.com/intellij-repository/snapshots/com/jetbrains/intellij/idea/ideaIC/212.4037.9-EAP-SNAPSHOT/ideaIC-212.4037.9-EAP-SNAPSHOT.zip",
+    sha256 = "5b363f6f1722a6ef7f4815be7b20ab11bfdad7eca473a0bb928f41eae300d565",
+    url = "https://www.jetbrains.com/intellij-repository/snapshots/com/jetbrains/intellij/idea/ideaIC/212.4638.7-EAP-SNAPSHOT/ideaIC-212.4638.7-EAP-SNAPSHOT.zip",
 )
 
 # The plugin api for IntelliJ UE 2020.2. This is required to run UE-specific
@@ -74,8 +74,8 @@ http_archive(
 http_archive(
     name = "intellij_ue_2021_2",
     build_file = "@//intellij_platform_sdk:BUILD.ue212",
-    sha256 = "7b7b009af77607f4417146ec88a612c93c4f9fcc419b97d05f4bb02bc96b7a2a",
-    url = "https://www.jetbrains.com/intellij-repository/snapshots/com/jetbrains/intellij/idea/ideaIU/212.4037.9-EAP-SNAPSHOT/ideaIU-212.4037.9-EAP-SNAPSHOT.zip",
+    sha256 = "832481d251e52de972d3fee1f705959fc98ae44c34ddcae7ec344c752f3f5c33",
+    url = "https://www.jetbrains.com/intellij-repository/snapshots/com/jetbrains/intellij/idea/ideaIU/212.4638.7-EAP-SNAPSHOT/ideaIU-212.4638.7-EAP-SNAPSHOT.zip",
 )
 
 # The plugin api for CLion 2020.2. This is required to build CLwB,
@@ -180,8 +180,8 @@ http_archive(
 http_archive(
     name = "go_2021_2",
     build_file_content = _GO_BUILD_FILE,
-    sha256 = "ebee14208d10049ea564d4797393cf6206b40f3e573aeabd90f3d7a099f4b8ed",
-    url = "https://plugins.jetbrains.com/files/9568/122271/go-212.4037.9.zip",
+    sha256 = "0d0e17e98f832c5a79206f75395bb99df0308711128c4973ccd0d2f8145fee7b",
+    url = "https://plugins.jetbrains.com/files/9568/126651/go-212.4638.7.zip",
 )
 
 _SCALA_BUILD_FILE = """
@@ -220,8 +220,8 @@ http_archive(
 http_archive(
     name = "scala_2021_2",
     build_file_content = _SCALA_BUILD_FILE,
-    sha256 = "c3156577ba6233171099a49c1f419040aa89d390c8fa1e6a094cd1c566a02775",
-    url = "https://plugins.jetbrains.com/files/1347/121879/scala-intellij-bin-2021.2.9.zip",
+    sha256 = "6413b17f6ce60d6998307b36ce3645fcb9351d1bcf52f32dc35ba3a120891ac1",
+    url = "https://plugins.jetbrains.com/files/1347/126934/scala-intellij-bin-2021.2.12.zip",
 )
 
 # The plugin api for Android Studio 4.2. This is required to build ASwB,
