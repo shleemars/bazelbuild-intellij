@@ -29,8 +29,8 @@ http_archive(
 http_archive(
     name = "intellij_ce_2021_1",
     build_file = "@//intellij_platform_sdk:BUILD.idea211",
-    sha256 = "12b7b251a71e720d76c849ba7df932097a3bdc79f31527eb15695701c31c4d99",
-    url = "https://www.jetbrains.com/intellij-repository/releases/com/jetbrains/intellij/idea/ideaIC/2021.1.2/ideaIC-2021.1.2.zip",
+    sha256 = "ec6aee9fde6e8d9fd5eb730309d63399878d8760107fbd1ddbe402f56eed9d86",
+    url = "https://www.jetbrains.com/intellij-repository/releases/com/jetbrains/intellij/idea/ideaIC/2021.1.3/ideaIC-2021.1.3.zip",
 )
 
 # The plugin api for IntelliJ 2021.2. This is required to build IJwB,
@@ -38,8 +38,8 @@ http_archive(
 http_archive(
     name = "intellij_ce_2021_2",
     build_file = "@//intellij_platform_sdk:BUILD.idea212",
-    sha256 = "40adf4ab6a6a81159986b8dc4531c5c32022d4d1a0f89ed325812f710b606353",
-    url = "https://www.jetbrains.com/intellij-repository/snapshots/com/jetbrains/intellij/idea/ideaIC/212.4037.9-EAP-SNAPSHOT/ideaIC-212.4037.9-EAP-SNAPSHOT.zip",
+    sha256 = "5b363f6f1722a6ef7f4815be7b20ab11bfdad7eca473a0bb928f41eae300d565",
+    url = "https://www.jetbrains.com/intellij-repository/snapshots/com/jetbrains/intellij/idea/ideaIC/212.4638.7-EAP-SNAPSHOT/ideaIC-212.4638.7-EAP-SNAPSHOT.zip",
 )
 
 # The plugin api for IntelliJ UE 2020.2. This is required to run UE-specific
@@ -65,8 +65,8 @@ http_archive(
 http_archive(
     name = "intellij_ue_2021_1",
     build_file = "@//intellij_platform_sdk:BUILD.ue211",
-    sha256 = "858b37cc64f52be55c6dac8fed147803310e7f243ffdaa81e538f10df59b0cf5",
-    url = "https://www.jetbrains.com/intellij-repository/releases/com/jetbrains/intellij/idea/ideaIU/2021.1.2/ideaIU-2021.1.2.zip",
+    sha256 = "da25231d007afea92879e3fdd10b85b2ec69772ade47601d05c67e0b3e5f5d7d",
+    url = "https://www.jetbrains.com/intellij-repository/releases/com/jetbrains/intellij/idea/ideaIU/2021.1.3/ideaIU-2021.1.3.zip",
 )
 
 # The plugin api for IntelliJ UE 2021.2. This is required to run UE-specific
@@ -74,8 +74,8 @@ http_archive(
 http_archive(
     name = "intellij_ue_2021_2",
     build_file = "@//intellij_platform_sdk:BUILD.ue212",
-    sha256 = "7b7b009af77607f4417146ec88a612c93c4f9fcc419b97d05f4bb02bc96b7a2a",
-    url = "https://www.jetbrains.com/intellij-repository/snapshots/com/jetbrains/intellij/idea/ideaIU/212.4037.9-EAP-SNAPSHOT/ideaIU-212.4037.9-EAP-SNAPSHOT.zip",
+    sha256 = "832481d251e52de972d3fee1f705959fc98ae44c34ddcae7ec344c752f3f5c33",
+    url = "https://www.jetbrains.com/intellij-repository/snapshots/com/jetbrains/intellij/idea/ideaIU/212.4638.7-EAP-SNAPSHOT/ideaIU-212.4638.7-EAP-SNAPSHOT.zip",
 )
 
 # The plugin api for CLion 2020.2. This is required to build CLwB,
@@ -100,8 +100,8 @@ http_archive(
 http_archive(
     name = "clion_2021_1",
     build_file = "@//intellij_platform_sdk:BUILD.clion211",
-    sha256 = "9f4d096918c140d28c766a149ab0c52bddddf5919e1ce28bc092c3d325c7a9ff",
-    url = "https://download.jetbrains.com/cpp/CLion-2021.1.2.tar.gz",
+    sha256 = "bf2f627bab06fa94b32f205f15a67659a7bb38e078847cb6e3f811098dc13897",
+    url = "https://download.jetbrains.com/cpp/CLion-2021.1.3.tar.gz",
 )
 
 _PYTHON_CE_BUILD_FILE = """
@@ -132,16 +132,16 @@ http_archive(
 http_archive(
     name = "python_2021_1",
     build_file_content = _PYTHON_CE_BUILD_FILE,
-    sha256 = "76960b404e11011cc227edfd2a7e7fb59ebff52f2c2955d80c933f69e887a7c5",
-    url = "https://plugins.jetbrains.com/files/7322/122104/python-ce-211.7442.53.zip",
+    sha256 = "7d16cc9bf80c9e2c26d55d55564c1c174583a5e6900e6b7f13d5663275b07644",
+    url = "https://plugins.jetbrains.com/files/7322/125352/python-ce-211.7628.24.zip",
 )
 
 # Python plugin for IntelliJ CE. Required at compile-time for python-specific features.
 http_archive(
     name = "python_2021_2",
     build_file_content = _PYTHON_CE_BUILD_FILE,
-    sha256 = "ada2dbf435cc8678fcf8b0bd3d87094cf65a4e5ec1d09f79c81b155f6252646a",
-    url = "https://plugins.jetbrains.com/files/7322/122402/python-ce-212.4037.52.zip",
+    sha256 = "0c9e5badaf88934209e626cb65ac68756429e9950fab57e8a1c22fc6695c176d",
+    url = "https://plugins.jetbrains.com/files/7322/126540/python-ce-212.4638.10.zip",
 )
 
 _GO_BUILD_FILE = """
@@ -172,16 +172,16 @@ http_archive(
 http_archive(
     name = "go_2021_1",
     build_file_content = _GO_BUILD_FILE,
-    sha256 = "e74de51374b107045f3712e370605d6705cca537dfe42ac74be66aa5a482ac99",
-    url = "https://plugins.jetbrains.com/files/9568/120583/go-211.7442.27.zip",
+    sha256 = "da95dd911e98e1ca04107794ea0e8732105e227b0ae3ea593240aca72a1785ca",
+    url = "https://plugins.jetbrains.com/files/9568/122859/go-211.7628.1.zip",
 )
 
 # Go plugin for IntelliJ UE. Required at compile-time for Bazel integration.
 http_archive(
     name = "go_2021_2",
     build_file_content = _GO_BUILD_FILE,
-    sha256 = "ebee14208d10049ea564d4797393cf6206b40f3e573aeabd90f3d7a099f4b8ed",
-    url = "https://plugins.jetbrains.com/files/9568/122271/go-212.4037.9.zip",
+    sha256 = "0d0e17e98f832c5a79206f75395bb99df0308711128c4973ccd0d2f8145fee7b",
+    url = "https://plugins.jetbrains.com/files/9568/126651/go-212.4638.7.zip",
 )
 
 _SCALA_BUILD_FILE = """
@@ -220,8 +220,8 @@ http_archive(
 http_archive(
     name = "scala_2021_2",
     build_file_content = _SCALA_BUILD_FILE,
-    sha256 = "c3156577ba6233171099a49c1f419040aa89d390c8fa1e6a094cd1c566a02775",
-    url = "https://plugins.jetbrains.com/files/1347/121879/scala-intellij-bin-2021.2.9.zip",
+    sha256 = "6413b17f6ce60d6998307b36ce3645fcb9351d1bcf52f32dc35ba3a120891ac1",
+    url = "https://plugins.jetbrains.com/files/1347/126934/scala-intellij-bin-2021.2.12.zip",
 )
 
 # The plugin api for Android Studio 4.2. This is required to build ASwB,
@@ -238,8 +238,8 @@ http_archive(
 http_archive(
     name = "android_studio_2020_3",
     build_file = "@//intellij_platform_sdk:BUILD.android_studio203",
-    sha256 = "e4fe551b8cd671dc732651d8b94da660662e216e0de0674f8cd263297b100f9a",
-    url = "https://dl.google.com/dl/android/studio/ide-zips/2020.3.1.18/android-studio-2020.3.1.18-linux.tar.gz",
+    sha256 = "05bd13ee3e22a5c4b2151015f548da5ad886a1b67e418f185824ab24bad48c6b",
+    url = "https://dl.google.com/dl/android/studio/ide-zips/2020.3.1.20/android-studio-2020.3.1.20-linux.tar.gz",
 )
 
 # LICENSE: Common Public License 1.0
