@@ -6,11 +6,11 @@ INDIRECT_IJ_PRODUCTS = {
     "intellij-latest": "intellij-2020.3",
     "intellij-latest-mac": "intellij-2020.3-mac",
     "intellij-beta": "intellij-2021.1",
-    "intellij-canary": "intellij-2021.1",
+    "intellij-under-dev": "intellij-2021.1",
     "intellij-ue-latest": "intellij-ue-2020.3",
     "intellij-ue-latest-mac": "intellij-ue-2020.3-mac",
     "intellij-ue-beta": "intellij-ue-2021.1",
-    "intellij-ue-canary": "intellij-ue-2021.1",
+    "intellij-ue-under-dev": "intellij-ue-2021.1",
     "android-studio-latest": "android-studio-4.2",
     "android-studio-beta": "android-studio-4.2",
     "android-studio-beta-mac": "android-studio-4.2-mac",
@@ -21,10 +21,10 @@ INDIRECT_IJ_PRODUCTS = {
     "clion-under-dev": "clion-2021.1",
     # Indirect ij_product mapping for Bazel Plugin OSS
     "intellij-oss-stable": "intellij-2021.1",
-    "intellij-oss-beta": "intellij-2021.1",
+    "intellij-oss-beta": "intellij-2021.2",
     "intellij-oss-under-dev": "intellij-2021.2",
     "intellij-ue-oss-stable": "intellij-ue-2021.1",
-    "intellij-ue-oss-beta": "intellij-ue-2021.1",
+    "intellij-ue-oss-beta": "intellij-ue-2021.2",
     "intellij-ue-oss-under-dev": "intellij-ue-2021.2",
     "android-studio-oss-stable": "android-studio-4.2",
     "android-studio-oss-beta": "android-studio-4.2",
@@ -291,6 +291,44 @@ def select_from_plugin_api_version_directory(params):
             params[ij_product] = [_plugin_api_directory(DIRECT_IJ_PRODUCTS[ij_product]) + item for item in value]
 
     return _do_select_for_plugin_api(params)
+
+def get_versions_to_build(product):
+    """"Returns a set of unique product version aliases to test and build during regular release process.
+
+    For each product, we care about four versions aliases to build and release to JetBrains
+    repository; -latest, -beta, -oss-stable and oss-beta. However, some of these aliases can
+    point to the same IDE version and this can lead to conflicts if we attempt to blindly
+    build and upload the four versions. This function is used to return only the aliases
+    that point to different IDE versions of the given product.
+
+    Args:
+        product: name of the product; android-studio, clion, intellij-ue
+
+    Returns:
+        A space separated list of product version aliases to build, the values can be
+        oss-stable, oss-beta, internal-stable and internal-beta.
+    """
+    aliases_to_build = []
+    plugin_api_versions = []
+    for alias in ["oss-stable", "latest", "oss-beta", "beta"]:
+        indirect_ij_product = product + "-" + alias
+        if indirect_ij_product not in INDIRECT_IJ_PRODUCTS:
+            fail(
+                "Product-version alias %s not found." % indirect_ij_product,
+                "Invalid product: %s only android-studio, clion and intellij-ue are accepted." % product,
+            )
+
+        version = INDIRECT_IJ_PRODUCTS[indirect_ij_product]
+        if version not in plugin_api_versions:
+            plugin_api_versions.append(version)
+            if alias == "latest":
+                aliases_to_build.append("internal-stable")
+            elif alias == "beta":
+                aliases_to_build.append("internal-beta")
+            else:
+                aliases_to_build.append(alias)
+
+    return " ".join(aliases_to_build)
 
 def no_mockito_extensions(name, jars, **kwargs):
     """Removes mockito extensions from jars.
