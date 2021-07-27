@@ -15,9 +15,6 @@
  */
 package com.google.idea.blaze.android.sync.importer;
 
-import com.android.ide.common.util.PathHashMapKt;
-import com.android.ide.common.util.PathMap;
-import com.android.ide.common.util.PathString;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -41,15 +38,12 @@ import com.google.idea.blaze.base.settings.Blaze;
 import com.google.idea.blaze.base.sync.data.BlazeProjectDataManager;
 import com.google.idea.blaze.base.sync.projectview.ImportRoots;
 import com.google.idea.blaze.base.sync.projectview.ProjectViewTargetImportFilter;
-import com.google.idea.blaze.java.sync.model.BlazeContentEntry;
 import com.google.idea.blaze.java.sync.model.BlazeJarLibrary;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -208,7 +202,13 @@ public class BlazeImportUtil {
         .collect(ImmutableList.toImmutableList());
   }
 
-  /** Returns the set of relative generated resource paths for the given {@link ProjectViewSet}. */
+  /**
+   * Returns the set of paths for "allowed generated resource".
+   *
+   * <p>Normally generated resources are not picked up during sync. However, there maybe cases where
+   * some resources are intentionally generated to be used as source. These resources can be
+   * "allowed" by including it under the {@link GeneratedAndroidResourcesSection} tag.
+   */
   public static ImmutableSet<String> getAllowedGenResourcePaths(ProjectViewSet projectViewSet) {
     return ImmutableSet.copyOf(
         projectViewSet.listItems(GeneratedAndroidResourcesSection.KEY).stream()
@@ -216,26 +216,13 @@ public class BlazeImportUtil {
             .collect(Collectors.toSet()));
   }
 
-  /**
-   * Returns a predicate that returns true if a fake AAR should be created for the given resource
-   * folder. That is, it returns true if the folder is outside the project view.
-   */
-  public static Predicate<ArtifactLocation> getShouldCreateFakeAarFilter(BlazeImportInput input) {
+  /** Returns true if the folder is outside the project view. */
+  public static Predicate<ArtifactLocation> isOutsideProjectViewFilter(BlazeImportInput input) {
     ImportRoots importRoots =
         ImportRoots.builder(input.workspaceRoot, input.buildSystem)
             .add(input.projectViewSet)
             .build();
     return artifactLocation ->
         !importRoots.containsWorkspacePath(new WorkspacePath(artifactLocation.getRelativePath()));
-  }
-
-  /** Returns a map of PathString onto the most specific BlazeContentEntry for that path. */
-  public static PathMap<BlazeContentEntry> getContentEntryForPath(
-      Collection<BlazeContentEntry> directories) {
-    Map<PathString, BlazeContentEntry> originalMap = new HashMap<>();
-    for (BlazeContentEntry next : directories) {
-      originalMap.put(new PathString(next.contentRoot), next);
-    }
-    return PathHashMapKt.toPathMap(originalMap);
   }
 }
