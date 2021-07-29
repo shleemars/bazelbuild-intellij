@@ -180,8 +180,8 @@ http_archive(
 http_archive(
     name = "go_2021_2",
     build_file_content = _GO_BUILD_FILE,
-    sha256 = "0d0e17e98f832c5a79206f75395bb99df0308711128c4973ccd0d2f8145fee7b",
-    url = "https://plugins.jetbrains.com/files/9568/126651/go-212.4638.7.zip",
+    sha256 = "03946eff9b966f40d75b59722de5d6eb297dd594ee56f9d92d9cabb279d4e237",
+    url = "https://plugins.jetbrains.com/files/9568/129645/go-212.4746.92.zip",
 )
 
 _SCALA_BUILD_FILE = """
@@ -220,8 +220,8 @@ http_archive(
 http_archive(
     name = "scala_2021_2",
     build_file_content = _SCALA_BUILD_FILE,
-    sha256 = "6413b17f6ce60d6998307b36ce3645fcb9351d1bcf52f32dc35ba3a120891ac1",
-    url = "https://plugins.jetbrains.com/files/1347/126934/scala-intellij-bin-2021.2.12.zip",
+    sha256 = "905ccf2b69723dd1258a1a39377a4de8298a86cbbe8ede0c4109699804b4210b",
+    url = "https://plugins.jetbrains.com/files/1347/129604/scala-intellij-bin-2021.2.15.zip",
 )
 
 # The plugin api for Android Studio 4.2. This is required to build ASwB,
